@@ -2,6 +2,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import style from "./Form.module.scss";
 import PhoneInput from "react-phone-number-input/input";
 import { E164Number } from "libphonenumber-js/types";
+import { Modal } from "../../components";
 
 export const Form = () => {
   const emptyError = "Поле не может быть пустым";
@@ -19,9 +20,51 @@ export const Form = () => {
   const [errorMessage, setErrorMessage] = useState(emptyError);
   const [formValidation, setFormValidation] = useState(false);
 
+  const [modalActive, setModalActive] = useState(false);
+  const [responseError, setResponseError] = useState(false);
+
+  const resetForm = ()=>{
+    setName('');
+    setEmail('');
+    setPhone(undefined);
+    setMessage('');
+    setResponseError(false);
+
+  }
+
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    return;
+    const data = { name, email, phone, message };
+
+    fetch("http://localhost:9090/api/registration", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          responseHandler(response.statusText?.toLowerCase());
+          
+        } else {
+          responseHandler(response.statusText?.toLowerCase());
+          
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const responseHandler = (text: string) => {
+    if (text === "ok") {
+      setModalActive(true);
+      setResponseError(false);
+      resetForm();
+      let timerId = setTimeout(() => setModalActive(false), 3000);
+    } else {
+      setModalActive(true);
+      setResponseError(true);
+      let timerId = setTimeout(() => setModalActive(false), 5000);
+    }
   };
 
   const blurHandler = (e: { target: { name: string } }) => {
@@ -154,6 +197,21 @@ export const Form = () => {
           disabled={!formValidation}
         />
       </form>
+      <Modal active={modalActive} setActive={setModalActive}>
+        {!responseError && (
+          <h3 className={style.answer}>
+            Поздравляю, вы успешно зарегестрировались
+          </h3>
+        )}
+        {responseError && (
+          <>
+            <h3 className={style.answer_error}>
+              Упс, что то пошло не так, попробуйте позже
+            </h3>
+            <h4>Bad Request</h4>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };
