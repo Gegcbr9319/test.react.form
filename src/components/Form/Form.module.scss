@@ -25,10 +25,14 @@
   color: rgb(255, 255, 255);
   font-style: italic;
   font-size: 18px;
+  @media screen and (max-width: 600px){
+    font-size: 12px;
+    
+  }
 }
 
 .form_button {
-  width: 200px;
+  width: 50%;
   margin: 0 auto;
   height: 40px;
   border: 1px solid rgb(252, 251, 251);
@@ -36,6 +40,10 @@
   background: linear-gradient(to bottom right, blue, pink);
   color: white;
   font-size: 18px;
+  @media screen and (max-width: 600px){
+    font-size: 12px;
+    
+  }
 }
 .form_button:hover {
   background: linear-gradient(to bottom right, pink, blue);
@@ -59,7 +67,7 @@
   border-radius: 10px;
   height: 25px;
   font-size: 18px;
-  width: 200px;
+  width: 50%;
   margin: 0 auto;
   outline: none;
 }
@@ -79,4 +87,8 @@
 
 .error{
     color: red;
+    @media screen and (max-width: 600px){
+        font-size: 12px;
+        
+      }
 }
